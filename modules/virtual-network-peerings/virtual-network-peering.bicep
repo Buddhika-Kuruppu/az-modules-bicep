@@ -37,7 +37,7 @@ resource peering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2023-
     remoteVirtualNetwork: {
       id: remoteVnetId
     }
-    syncRemoteAddressSpace: syncRemoteAddressSpace ? 'true' : 'false'
+    syncRemoteAddressSpace: syncRemoteAddressSpace
   }
 }
 
