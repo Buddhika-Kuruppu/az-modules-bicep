@@ -1,13 +1,16 @@
 targetScope = 'subscription'
 
 @description('The Azure region for resources')
-param location string = 'eastus'
+param location string
 
 @description('Environment name')
-param environment string = 'dev'
+param environment string
+
+@description('Network Resource Group Name')
+param network_rg_name string
 
 module resourceGroup '../../modules/resource-groups/resource-group.bicep' = {
-  name: 'rg-deployment-${environment}'
+  name: network_rg_name
   params: {
     resourceGroupName: 'rg-${environment}'
     location: location
