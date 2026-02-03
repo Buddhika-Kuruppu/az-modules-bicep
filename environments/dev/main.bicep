@@ -12,7 +12,7 @@ param network_rg_name string
 module resourceGroup '../../modules/resource-groups/resource-group.bicep' = {
   name: network_rg_name
   params: {
-    resourceGroupName: 'rg-${environment}'
+    resourceGroupName: network_rg_name
     location: location
     tags: {
       Environment: environment
