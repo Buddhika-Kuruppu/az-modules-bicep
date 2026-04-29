@@ -6,6 +6,7 @@ Reusable Azure Bicep modules for infrastructure-as-code deployments. Each module
 
 ```
 modules/
+├── app-service-environments/ # App Service Environment V3 (isolated hosting)
 ├── app-service-plans/        # App Service Plan (server farm)
 ├── network-security-groups/  # Network Security Group with security rules
 ├── resource-groups/          # Resource Group (subscription scope)
@@ -16,7 +17,42 @@ modules/
 
 environments/
 └── dev/                      # Dev environment deployment entry point
+
+examples/
+├── resource-group/           # Create a resource group
+├── virtual-network/          # VNet with subnets
+├── network-security-group/   # NSG with security rules
+├── storage-account/          # Storage account (standard and secure variants)
+├── app-service-plan/         # App Service Plan (Linux and Windows variants)
+├── app-service-environment/  # ASEv3 with dedicated networking
+└── hub-spoke-network/        # Full hub-spoke topology with peering
 ```
+
+---
+
+## Using modules from a registry
+
+Modules are designed to be published to an Azure Container Registry (ACR) and consumed remotely. Replace `mycompanyregistry.azurecr.io` throughout the examples with your own registry hostname.
+
+**Publish a module to ACR:**
+```bash
+az bicep publish \
+  --file modules/resource-groups/resource-group.bicep \
+  --target br:mycompanyregistry.azurecr.io/bicep/resource-groups/resource-group:v1
+```
+
+**Reference the published module in your Bicep template:**
+```bicep
+module rg 'br:mycompanyregistry.azurecr.io/bicep/resource-groups/resource-group:v1' = {
+  name: 'deploy-rg'
+  params: {
+    resourceGroupName: 'rg-aue-dev-01'
+    location: 'australiaeast'
+  }
+}
+```
+
+See the [`examples/`](examples/) directory for ready-to-use deployments covering each module.
 
 ---
 
