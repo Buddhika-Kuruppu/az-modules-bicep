@@ -1,3 +1,10 @@
+// Replace 'mycompanyregistry.azurecr.io' with your Azure Container Registry hostname.
+// Publish modules:
+//   az bicep publish --file ../../../modules/resource-groups/resource-group.bicep --target br:mycompanyregistry.azurecr.io/bicep/resource-groups/resource-group:v1
+//   az bicep publish --file ../../../modules/network-security-groups/network-security-group.bicep --target br:mycompanyregistry.azurecr.io/bicep/network-security-groups/network-security-group:v1
+//   az bicep publish --file ../../../modules/virtual-networks/virtual-network.bicep --target br:mycompanyregistry.azurecr.io/bicep/virtual-networks/virtual-network:v1
+//   az bicep publish --file ../../../modules/storage-accounts/storage-account.bicep --target br:mycompanyregistry.azurecr.io/bicep/storage-accounts/storage-account:v1
+
 targetScope = 'subscription'
 
 @description('Azure region for all resources')
@@ -31,7 +38,7 @@ var commonTags = union({
   ManagedBy: 'Bicep'
 }, tags)
 
-module resourceGroup 'https://raw.githubusercontent.com/Buddhika-Kuruppu/az-modules-bicep/main/modules/resource-groups/resource-group.bicep' = {
+module resourceGroup 'br:mycompanyregistry.azurecr.io/bicep/resource-groups/resource-group:v1' = {
   name: 'deploy-${resourceGroupName}'
   params: {
     resourceGroupName: resourceGroupName
@@ -40,7 +47,7 @@ module resourceGroup 'https://raw.githubusercontent.com/Buddhika-Kuruppu/az-modu
   }
 }
 
-module nsg 'https://raw.githubusercontent.com/Buddhika-Kuruppu/az-modules-bicep/main/modules/network-security-groups/network-security-group.bicep' = {
+module nsg 'br:mycompanyregistry.azurecr.io/bicep/network-security-groups/network-security-group:v1' = {
   name: 'deploy-${nsgName}'
   scope: resourceGroup(resourceGroup.outputs.resourceGroupName)
   params: {
@@ -74,7 +81,7 @@ module nsg 'https://raw.githubusercontent.com/Buddhika-Kuruppu/az-modules-bicep/
   }
 }
 
-module vnet 'https://raw.githubusercontent.com/Buddhika-Kuruppu/az-modules-bicep/main/modules/virtual-networks/virtual-network.bicep' = {
+module vnet 'br:mycompanyregistry.azurecr.io/bicep/virtual-networks/virtual-network:v1' = {
   name: 'deploy-${vnetName}'
   scope: resourceGroup(resourceGroup.outputs.resourceGroupName)
   params: {
@@ -103,7 +110,7 @@ module vnet 'https://raw.githubusercontent.com/Buddhika-Kuruppu/az-modules-bicep
   }
 }
 
-module storage 'https://raw.githubusercontent.com/Buddhika-Kuruppu/az-modules-bicep/main/modules/storage-accounts/storage-account.bicep' = {
+module storage 'br:mycompanyregistry.azurecr.io/bicep/storage-accounts/storage-account:v1' = {
   name: 'deploy-${storageAccountName}'
   scope: resourceGroup(resourceGroup.outputs.resourceGroupName)
   params: {
