@@ -15,17 +15,12 @@ modules/
 ├── virtual-network-peerings/ # VNet-to-VNet peering
 └── virtual-networks/         # Virtual Network with optional subnets
 
-environments/
-└── dev/                      # Dev environment deployment entry point
-
 examples/
+├── environments/
+│   └── dev/                  # Dev environment (RG + NSG + VNet + Storage)
 ├── resource-group/           # Create a resource group
-├── virtual-network/          # VNet with subnets
-├── network-security-group/   # NSG with security rules
 ├── storage-account/          # Storage account (standard and secure variants)
-├── app-service-plan/         # App Service Plan (Linux and Windows variants)
-├── app-service-environment/  # ASEv3 with dedicated networking
-└── hub-spoke-network/        # Full hub-spoke topology with peering
+└── virtual-network/          # VNet with subnets and NSG
 ```
 
 ---
@@ -395,16 +390,16 @@ module storage 'modules/storage-accounts/storage-account.bicep' = {
 
 ## Environments
 
-The `environments/` directory contains environment-specific entry points that compose the modules above.
+The `examples/environments/` directory contains environment-specific entry points that compose multiple modules into a full deployment.
 
-### Dev (`environments/dev/`)
+### Dev (`examples/environments/dev/`)
 
-Deploys a resource group for the dev environment.
+Deploys a complete dev environment at subscription scope: resource group, NSG (with HTTPS allow + deny-all rules), virtual network (three subnets), and a storage account. All resources are tagged with the environment label.
 
 ```bash
 # Deploy using Azure CLI
 az deployment sub create \
   --location australiaeast \
-  --template-file environments/dev/main.bicep \
-  --parameters environments/dev/main.bicepparam
+  --template-file examples/environments/dev/main.bicep \
+  --parameters examples/environments/dev/main.bicepparam
 ```
