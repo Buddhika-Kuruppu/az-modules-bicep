@@ -6,6 +6,7 @@ Reusable Azure Bicep modules for infrastructure-as-code deployments. Each module
 
 ```
 modules/
+├── api-management/           # API Management service
 ├── app-service-environments/ # App Service Environment V3 (isolated hosting)
 ├── app-service-plans/        # App Service Plan (server farm)
 ├── network-security-groups/  # Network Security Group with security rules
@@ -16,6 +17,7 @@ modules/
 └── virtual-networks/         # Virtual Network with optional subnets
 
 examples/
+├── api-management/           # API Management (Consumption and Developer variants)
 ├── environments/
 │   └── dev/                  # Dev environment (RG + NSG + VNet + Storage)
 ├── resource-group/           # Create a resource group
@@ -52,6 +54,60 @@ See the [`examples/`](examples/) directory for ready-to-use deployments covering
 ---
 
 ## Modules
+
+### API Management
+
+**Path:** `modules/api-management/api-management.bicep`
+**Scope:** `resourceGroup`
+
+Creates an Azure API Management service with configurable SKU, VNet integration, and publisher settings.
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `apimName` | string | Yes | — | Name of the APIM service (globally unique, 1–50 chars) |
+| `publisherEmail` | string | Yes | — | Publisher notification email address |
+| `publisherName` | string | Yes | — | Publisher organisation name |
+| `location` | string | No | `resourceGroup().location` | Azure region |
+| `skuName` | string | No | `Developer` | SKU: `Consumption`, `Developer`, `Basic`, `BasicV2`, `Standard`, `StandardV2`, `Premium` |
+| `skuCapacity` | int | No | `1` | Deployed units (use `0` for Consumption) |
+| `virtualNetworkType` | string | No | `None` | VNet integration mode: `None`, `External`, `Internal` |
+| `subnetId` | string | No | `''` | Subnet resource ID (required when `virtualNetworkType` is not `None`) |
+| `publicNetworkAccess` | string | No | `Enabled` | `Enabled` or `Disabled` |
+| `enableClientCertificate` | bool | No | `false` | Enable client certificate on gateway (Consumption only) |
+| `notificationSenderEmail` | string | No | `apimgmt-noreply@...` | Sender address for notification emails |
+| `customProperties` | object | No | `{}` | Custom gateway/portal properties (cipher/protocol overrides) |
+| `zones` | array | No | `[]` | Availability zones for zone-redundant deployment (Premium only) |
+| `tags` | object | No | `{}` | Tags to apply |
+
+| Output | Type | Description |
+|--------|------|-------------|
+| `apimId` | string | Resource ID of the APIM service |
+| `apimName` | string | Name of the APIM service |
+| `gatewayUrl` | string | Gateway URL for API calls |
+| `managementApiUrl` | string | Management API URL |
+| `developerPortalUrl` | string | Developer portal URL |
+| `publicIpAddresses` | array | Public IP addresses |
+| `privateIpAddresses` | array | Private IP addresses (when VNet integrated) |
+| `location` | string | Location of the APIM service |
+
+**Usage:**
+```bicep
+module apim 'modules/api-management/api-management.bicep' = {
+  name: 'deploy-apim'
+  params: {
+    apimName: 'apim-aue-dev-01'
+    publisherEmail: 'admin@example.com'
+    publisherName: 'My Organisation'
+    skuName: 'Developer'
+    skuCapacity: 1
+    tags: {
+      Environment: 'dev'
+    }
+  }
+}
+```
+
+---
 
 ### Resource Group
 
