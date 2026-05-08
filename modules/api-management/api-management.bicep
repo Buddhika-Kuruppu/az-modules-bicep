@@ -41,6 +41,9 @@ param virtualNetworkType string = 'None'
 @description('The resource ID of the subnet for VNet integration (required when virtualNetworkType is External or Internal)')
 param subnetId string = ''
 
+@description('The resource ID of a public IP address to associate with the service (required for stv2 deployments with VNet integration; applies when virtualNetworkType is External or Internal)')
+param publicIpAddressId string = ''
+
 @description('Whether public network access is enabled')
 @allowed([
   'Enabled'
@@ -75,6 +78,7 @@ resource apim 'Microsoft.ApiManagement/service@2023-09-01-preview' = {
     notificationSenderEmail: notificationSenderEmail
     virtualNetworkType: virtualNetworkType
     virtualNetworkConfiguration: !empty(subnetId) ? { subnetResourceId: subnetId } : null
+    publicIpAddressId: !empty(publicIpAddressId) ? publicIpAddressId : null
     publicNetworkAccess: publicNetworkAccess
     enableClientCertificate: enableClientCertificate
     customProperties: !empty(customProperties) ? customProperties : null
@@ -95,6 +99,9 @@ output managementApiUrl string = apim.properties.managementApiUrl
 
 @description('The developer portal URL of the API Management service')
 output developerPortalUrl string = apim.properties.developerPortalUrl
+
+@description('The resource ID of the associated public IP address (when publicIpAddressId is provided)')
+output publicIpAddressId string = apim.properties.publicIpAddressId ?? ''
 
 @description('The public IP addresses of the API Management service')
 output publicIpAddresses array = apim.properties.publicIPAddresses
