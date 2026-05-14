@@ -14,7 +14,8 @@ modules/
 ├── storage-accounts/         # Storage Account
 ├── subnets/                  # Subnet within an existing VNet
 ├── virtual-network-peerings/ # VNet-to-VNet peering
-└── virtual-networks/         # Virtual Network with optional subnets
+├── virtual-networks/         # Virtual Network with optional subnets
+└── virtual-wans/             # Virtual WAN (Basic and Standard)
 
 examples/
 ├── api-management/           # API Management (Consumption and Developer variants)
@@ -22,7 +23,8 @@ examples/
 │   └── dev/                  # Dev environment (RG + NSG + VNet + Storage)
 ├── resource-group/           # Create a resource group
 ├── storage-account/          # Storage account (standard and secure variants)
-└── virtual-network/          # VNet with subnets and NSG
+├── virtual-network/          # VNet with subnets and NSG
+└── virtual-wan/              # Virtual WAN (Basic and Standard variants)
 ```
 
 ---
@@ -437,6 +439,50 @@ module storage 'modules/storage-accounts/storage-account.bicep' = {
     }
     tags: {
       Environment: 'dev'
+    }
+  }
+}
+```
+
+---
+
+### Virtual WAN
+
+**Path:** `modules/virtual-wans/virtual-wan.bicep`
+**Scope:** `resourceGroup`
+
+Creates an Azure Virtual WAN — the foundation for a managed wide-area network connecting branches, VNets, and remote users via Virtual Hubs.
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `virtualWanName` | string | Yes | — | Name of the Virtual WAN |
+| `location` | string | No | `resourceGroup().location` | Azure region |
+| `virtualWanType` | string | No | `Standard` | `Basic` (Site-to-Site VPN only) or `Standard` (all hub types, higher throughput) |
+| `allowBranchToBranchTraffic` | bool | No | `true` | Allow VPN site-to-site traffic via the WAN |
+| `allowVnetToVnetTraffic` | bool | No | `true` | Allow VNet-to-VNet traffic via the WAN (Basic type only; Standard always enables this) |
+| `disableVpnEncryption` | bool | No | `false` | Disable VPN encryption |
+| `office365LocalBreakoutCategory` | string | No | `None` | Office 365 traffic optimisation: `None`, `Optimize`, `OptimizeAndAllow`, `All` |
+| `tags` | object | No | `{}` | Tags to apply |
+
+| Output | Type | Description |
+|--------|------|-------------|
+| `virtualWanId` | string | Resource ID of the Virtual WAN |
+| `virtualWanName` | string | Name of the Virtual WAN |
+| `virtualWanType` | string | Type of the Virtual WAN (`Basic` or `Standard`) |
+| `provisioningState` | string | Provisioning state of the Virtual WAN |
+| `location` | string | Location of the Virtual WAN |
+
+**Usage:**
+```bicep
+module vwan 'modules/virtual-wans/virtual-wan.bicep' = {
+  name: 'deploy-vwan'
+  params: {
+    virtualWanName: 'vwan-aue-prod-01'
+    virtualWanType: 'Standard'
+    allowBranchToBranchTraffic: true
+    office365LocalBreakoutCategory: 'OptimizeAndAllow'
+    tags: {
+      Environment: 'prod'
     }
   }
 }
