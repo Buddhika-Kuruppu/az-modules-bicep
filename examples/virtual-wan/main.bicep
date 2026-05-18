@@ -25,15 +25,6 @@ param allowVnetToVnetTraffic bool = true
 @description('Whether VPN encryption is disabled')
 param disableVpnEncryption bool = false
 
-@description('Office 365 local breakout category for optimising internet-bound Office 365 traffic')
-@allowed([
-  'None'
-  'Optimize'
-  'OptimizeAndAllow'
-  'All'
-])
-param office365LocalBreakoutCategory string = 'None'
-
 @description('Additional tags merged onto all resources')
 param tags object = {}
 
@@ -46,7 +37,6 @@ module virtualWan 'br:mycompanyregistry.azurecr.io/bicep/virtual-wans/virtual-wa
     allowBranchToBranchTraffic: allowBranchToBranchTraffic
     allowVnetToVnetTraffic: allowVnetToVnetTraffic
     disableVpnEncryption: disableVpnEncryption
-    office365LocalBreakoutCategory: office365LocalBreakoutCategory
     tags: union({
       Environment: environment
       ManagedBy: 'Bicep'

@@ -9,7 +9,6 @@ param virtualWanType = 'Basic'
 param allowBranchToBranchTraffic = true
 param allowVnetToVnetTraffic = false
 param disableVpnEncryption = false
-param office365LocalBreakoutCategory = 'None'
 param tags = {
   Project: 'MyProject'
   CostCentre: 'IT-001'
