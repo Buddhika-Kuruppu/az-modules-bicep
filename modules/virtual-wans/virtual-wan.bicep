@@ -23,15 +23,6 @@ param allowVnetToVnetTraffic bool
 @description('Whether VPN encryption is disabled')
 param disableVpnEncryption bool
 
-@description('Office 365 local breakout category for optimising internet-bound Office 365 traffic')
-@allowed([
-  'None'
-  'Optimize'
-  'OptimizeAndAllow'
-  'All'
-])
-param office365LocalBreakoutCategory string
-
 resource virtualWan 'Microsoft.Network/virtualWans@2023-11-01' = {
   name: virtualWanName
   location: location
@@ -41,7 +32,6 @@ resource virtualWan 'Microsoft.Network/virtualWans@2023-11-01' = {
     allowBranchToBranchTraffic: allowBranchToBranchTraffic
     allowVnetToVnetTraffic: allowVnetToVnetTraffic
     disableVpnEncryption: disableVpnEncryption
-    office365LocalBreakoutCategory: office365LocalBreakoutCategory
   }
 }
 

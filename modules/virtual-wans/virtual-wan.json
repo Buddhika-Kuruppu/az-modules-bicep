@@ -1,0 +1,111 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.40.2.10011",
+      "templateHash": "12810595972062661886"
+    }
+  },
+  "parameters": {
+    "virtualWanName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Virtual WAN"
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location for the Virtual WAN"
+      }
+    },
+    "tags": {
+      "type": "object",
+      "metadata": {
+        "description": "Tags to apply to the Virtual WAN"
+      }
+    },
+    "virtualWanType": {
+      "type": "string",
+      "allowedValues": [
+        "Basic",
+        "Standard"
+      ],
+      "metadata": {
+        "description": "The type of the Virtual WAN. Basic supports Site-to-Site VPN only; Standard supports all hub types and higher throughput."
+      }
+    },
+    "allowBranchToBranchTraffic": {
+      "type": "bool",
+      "metadata": {
+        "description": "Whether branch-to-branch traffic is allowed (VPN site to VPN site via the WAN)"
+      }
+    },
+    "allowVnetToVnetTraffic": {
+      "type": "bool",
+      "metadata": {
+        "description": "Whether VNet-to-VNet traffic is allowed via the Virtual WAN (only applicable to Basic type; Standard always enables this)"
+      }
+    },
+    "disableVpnEncryption": {
+      "type": "bool",
+      "metadata": {
+        "description": "Whether VPN encryption is disabled"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/virtualWans",
+      "apiVersion": "2023-11-01",
+      "name": "[parameters('virtualWanName')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "type": "[parameters('virtualWanType')]",
+        "allowBranchToBranchTraffic": "[parameters('allowBranchToBranchTraffic')]",
+        "allowVnetToVnetTraffic": "[parameters('allowVnetToVnetTraffic')]",
+        "disableVpnEncryption": "[parameters('disableVpnEncryption')]"
+      }
+    }
+  ],
+  "outputs": {
+    "virtualWanId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Virtual WAN"
+      },
+      "value": "[resourceId('Microsoft.Network/virtualWans', parameters('virtualWanName'))]"
+    },
+    "virtualWanName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Virtual WAN"
+      },
+      "value": "[parameters('virtualWanName')]"
+    },
+    "virtualWanType": {
+      "type": "string",
+      "metadata": {
+        "description": "The type of the Virtual WAN"
+      },
+      "value": "[reference(resourceId('Microsoft.Network/virtualWans', parameters('virtualWanName')), '2023-11-01').type]"
+    },
+    "provisioningState": {
+      "type": "string",
+      "metadata": {
+        "description": "The provisioning state of the Virtual WAN"
+      },
+      "value": "[reference(resourceId('Microsoft.Network/virtualWans', parameters('virtualWanName')), '2023-11-01').provisioningState]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the Virtual WAN"
+      },
+      "value": "[reference(resourceId('Microsoft.Network/virtualWans', parameters('virtualWanName')), '2023-11-01', 'full').location]"
+    }
+  }
+}
